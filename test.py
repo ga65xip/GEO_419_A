@@ -3,11 +3,9 @@ from main import unzipp
 
 
 #Setup für Download und Speicherung
-
 url = 'https://upload.uni-jena.de/data/641c17ff33dd02.60763151/GEO419A_Testdatensatz.zip'
 #path niklas
 save_path = 'D:/Studium/GEO_419A Python Kurs/Abschlussaufgabe/Ouput/test'
-
 #path philip
 #save_path = 'C:/Users/herzu/Documents/GEO419'
 
