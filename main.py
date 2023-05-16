@@ -23,7 +23,7 @@ def unzipp(path, filename):
 
 
 url = 'https://upload.uni-jena.de/data/641c17ff33dd02.60763151/GEO419A_Testdatensatz.zip'
-save_path = 'D:/Studium/GEO_419A Python Kurs/Abschlussaufgabe/Ouput/test'
+save_path = 'C:/Users/herzu/Documents/GEO419'
 filename = url.rsplit('/', 1)[1]
 
 
