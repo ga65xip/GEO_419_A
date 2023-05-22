@@ -4,6 +4,8 @@ import numpy as np
 from PIL import Image
 Image.MAX_IMAGE_PIXELS = None #for big TIFFS
 import glob
+import rasterio
+from rasterio.plot import show
 
 # URL Tutorial
 #https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
@@ -38,3 +40,6 @@ def plotting(save_path):
     tif_result = Image.fromarray(tif_log, mode='F')  # float32
     tif_result.save('{}_log.tif'.format(speichername.rsplit('.', 1)[0]), 'TIFF')
 
+def display_tiff(save_path):
+    ds = rasterio.open(save_path)
+    show((ds, 1), cmap='Greys')
