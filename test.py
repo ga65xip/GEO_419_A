@@ -1,5 +1,7 @@
 from main import download_zip
 from main import unzipp
+from main import plotting
+from main import display_tiff
 
 
 #Setup für Download und Speicherung
@@ -9,11 +11,12 @@ save_path = 'D:/Studium/GEO_419A Python Kurs/Abschlussaufgabe/Ouput/test'
 #path philip
 #save_path = 'C:/Users/herzu/Documents/GEO419'
 
-filename = url.rsplit('/', 1)[1]
-filename_no_type = filename.split('.', 1)[0]
+#filename = url.rsplit('/', 1)[1]
+#filename_no_type = filename.split('.', 1)[0]
 
 #Aufruf der Funktionen
 
 #download_zip(url, save_path)
-unzipp(save_path, filename)
-#Niklas test
+#unzipp(save_path, filename)
+#plotting(save_path)
+display_tiff(save_path)
