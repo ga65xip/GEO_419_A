@@ -7,9 +7,14 @@ import glob
 import rasterio
 from rasterio.plot import show
 
-# URL Tutorial
-#https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
+# URL Tutorial Download & Unzipping Files
+# https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
 
+# Numpy Working with 0's
+# https://stackoverflow.com/questions/21752989/numpy-efficiently-avoid-0s-when-taking-logmatrix
+
+# Read and Show TIFFs
+# https://www.kaggle.com/code/yassinealouini/working-with-tiff-files
 
 def download_zip(url, save_path):
     filename = url.rsplit('/', 1)[1]
@@ -34,11 +39,13 @@ def plotting(save_path):
     speichername = '{}/{}'.format(save_path, filename)
     tif_arr = np.asarray(Image.open(speichername))
 
-    # https://stackoverflow.com/questions/21752989/numpy-efficiently-avoid-0s-when-taking-logmatrix
+
     tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))
 
     tif_result = Image.fromarray(tif_log, mode='F')  # float32
     tif_result.save('{}_log.tif'.format(speichername.rsplit('.', 1)[0]), 'TIFF')
+
+
 
 def display_tiff(save_path):
     ds = rasterio.open(save_path)
