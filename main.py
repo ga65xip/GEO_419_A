@@ -16,6 +16,10 @@ from rasterio.plot import show
 # Read and Show TIFFs
 # https://www.kaggle.com/code/yassinealouini/working-with-tiff-files
 
+# url = Link to File
+# save_path = path to folder where the file is stored
+# file_path = direct path to file
+
 def download_zip(url, save_path):
     filename = url.rsplit('/', 1)[1]
     # Create a new file on the hard drive
@@ -27,26 +31,29 @@ def download_zip(url, save_path):
     print('finish')
 
 
-def unzipp(path, filename):
-    with zipfile.ZipFile('{}/{}'.format(path, filename), "r") as zip_ref:
-        zip_ref.extractall(path)
+def unzipp(url, save_path):
+    zipname = url.rsplit('/', 1)[1]
+    with zipfile.ZipFile('{}/{}'.format(save_path, zipname), "r") as zip_ref:
+        zip_ref.extractall(save_path)
     print('unzipped')
 
 
 def plotting(save_path):
     path = glob.glob('{}/*.tif'.format(save_path))
     filename = path[0].rsplit('\\', 1)[1]
-    speichername = '{}/{}'.format(save_path, filename)
-    tif_arr = np.asarray(Image.open(speichername))
+    file_path = '{}/{}'.format(save_path, filename)
+    tif_arr = np.asarray(Image.open(file_path))
 
 
     tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))
 
     tif_result = Image.fromarray(tif_log, mode='F')  # float32
-    tif_result.save('{}_log.tif'.format(speichername.rsplit('.', 1)[0]), 'TIFF')
+    tif_result.save('{}_log.tif'.format(file_path.rsplit('.', 1)[0]), 'TIFF')
+    global result_path
+    result_path = '{}_log.tif'.format(file_path.rsplit('.', 1)[0])
+    print('finished plotting')
 
 
-
-def display_tiff(save_path):
-    ds = rasterio.open(save_path)
+def display_tiff():
+    ds = rasterio.open(result_path)
     show((ds, 1), cmap='Greys')
