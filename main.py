@@ -26,8 +26,8 @@ from rasterio.plot import show
 # file_path = direct path to file
 
 def download_zip(url, save_path):
-    block_size = 1024  # 1 Kibibyte
     zipname = url.split("/")[-1]
+    block_size = 1024  # 1 Kibibyte
     print(f"Downloading {zipname}...")
     site = urlopen(url)
     meta = site.info()
