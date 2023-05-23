@@ -11,6 +11,9 @@ from rasterio.plot import show
 # URL Tutorial Download & Unzipping Files
 # https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
 
+# Adding Progessbar to download
+# https://stackoverflow.com/questions/37573483/progress-bar-while-download-file-over-http-with-requests
+
 # Numpy Working with 0's
 # https://stackoverflow.com/questions/21752989/numpy-efficiently-avoid-0s-when-taking-logmatrix
 
