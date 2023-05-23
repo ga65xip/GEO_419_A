@@ -1,3 +1,5 @@
+import requests
+from tqdm import tqdm
 from urllib.request import urlopen
 import zipfile
 import numpy as np
@@ -10,6 +12,9 @@ from rasterio.plot import show
 # URL Tutorial Download & Unzipping Files
 # https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
 
+# Added Progress Bar
+# https://stackoverflow.com/questions/37573483/progress-bar-while-download-file-over-http-with-requests
+
 # Numpy Working with 0's
 # https://stackoverflow.com/questions/21752989/numpy-efficiently-avoid-0s-when-taking-logmatrix
 
@@ -21,14 +26,21 @@ from rasterio.plot import show
 # file_path = direct path to file
 
 def download_zip(url, save_path):
-    filename = url.rsplit('/', 1)[1]
-    # Create a new file on the hard drive
-    zip_data = open('{}/{}'.format(save_path, filename), "wb")
-    # Write the contents of the downloaded file into the new file
-    zip_data.write(urlopen(url).read())
-    # Close the newly-created file
-    zip_data.close()
-    print('finish')
+    zipname = url.split("/")[-1]
+    block_size = 1024  # 1 Kibibyte
+    print(f"Downloading {zipname}...")
+    site = urlopen(url)
+    meta = site.info()
+    # Streaming, so we can iterate over the response.
+    response = requests.get(url, stream=True)
+    total_size_in_bytes = int(meta["Content-Length"])
+    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+    with open('{}/{}'.format(save_path, zipname), "wb") as file:
+        for data in response.iter_content(block_size):
+            progress_bar.update(len(data))
+            file.write(data)
+    progress_bar.close()
+    print("Download complete!")
 
 
 def unzipp(url, save_path):
@@ -53,7 +65,7 @@ def plotting(save_path):
     result_path = '{}_log.tif'.format(file_path.rsplit('.', 1)[0])
     print('finished plotting')
 
-
+#
 def display_tiff():
     ds = rasterio.open(result_path)
     show((ds, 1), cmap='Greys')
