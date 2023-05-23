@@ -7,6 +7,7 @@ import glob
 import rasterio
 from rasterio.plot import show
 
+
 # URL Tutorial Download & Unzipping Files
 # https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
 
@@ -21,14 +22,22 @@ from rasterio.plot import show
 # file_path = direct path to file
 
 def download_zip(url, save_path):
-    filename = url.rsplit('/', 1)[1]
-    # Create a new file on the hard drive
-    zip_data = open('{}/{}'.format(save_path, filename), "wb")
-    # Write the contents of the downloaded file into the new file
-    zip_data.write(urlopen(url).read())
-    # Close the newly-created file
-    zip_data.close()
-    print('finish')
+    block_size = 1024  # 1 Kibibyte
+    filename = url.split("/")[-1]
+    print(f"Downloading {filename}...")
+    site = urlopen(url)
+    meta = site.info()
+    # Streaming, so we can iterate over the response.
+    response = requests.get(url, stream=True)
+    total_size_in_bytes = int(meta["Content-Length"])
+    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+    with open('{}/{}'.format(save_path, filename), "wb") as file:
+        for data in response.iter_content(block_size):
+            progress_bar.update(len(data))
+            file.write(data)
+    progress_bar.close()
+    print("Download complete!")
+
 
 
 def unzipp(url, save_path):
@@ -57,3 +66,5 @@ def plotting(save_path):
 def display_tiff():
     ds = rasterio.open(result_path)
     show((ds, 1), cmap='Greys')
+
+
