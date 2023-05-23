@@ -27,28 +27,28 @@ from pathlib import Path
 # file_path = direct path to file
 
 def download_zip(url, save_path):
-    zipname = url.split("/")[-1]
+    zipname = url.split('/')[-1]
     block_size = 1024  # 1 Kibibyte
-    print(f"Downloading {zipname}...")
+    print(f'Downloading {zipname}...')
     site = urlopen(url)
     meta = site.info()
     # Streaming, so we can iterate over the response.
     response = requests.get(url, stream=True)
-    total_size_in_bytes = int(meta["Content-Length"])
+    total_size_in_bytes = int(meta['Content-Length'])
     progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
-    with open('{}/{}'.format(save_path, zipname), "wb") as file:
+    with open('{}/{}'.format(save_path, zipname), 'wb') as file:
         for data in response.iter_content(block_size):
             progress_bar.update(len(data))
             file.write(data)
     progress_bar.close()
-    print("Download complete!")
+    print('Download complete!')
 
 
 def unzipp(url, save_path):
     zipname = url.rsplit('/', 1)[1]
-    with zipfile.ZipFile('{}/{}'.format(save_path, zipname), "r") as zip_ref:
+    with zipfile.ZipFile('{}/{}'.format(save_path, zipname), 'r') as zip_ref:
         zip_ref.extractall(save_path)
-    print('unzipped')
+    print('Unzipped!')
 
 
 def plotting(save_path):
@@ -62,7 +62,7 @@ def plotting(save_path):
 
     tif_result = Image.fromarray(tif_log, mode='F')  # float32
     tif_result.save('{}_log.tif'.format(file_path.rsplit('.', 1)[0]), 'TIFF')
-    print('finished plotting')
+    print('Finished calculating!')
 
 
 def display_tiff(result):
@@ -79,15 +79,15 @@ def start_program(url, save_path):
 
     while finished != 'true':
         if not zip_file.is_file():
-             print('download zip')
+             print('Download ZIP!')
              download_zip(url, save_path)
         elif not geotif.is_file():
-            print('unzipp needed')
+            print('Unzipp needed!')
             unzipp(url, save_path)
         elif not result.is_file():
-            print('plotting needed')
+            print('Plotting needed!')
             plotting(save_path)
         else:
             finished = 'true'
-            print('display result')
+            print('Display result!')
             display_tiff(result)
