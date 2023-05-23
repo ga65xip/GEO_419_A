@@ -6,6 +6,7 @@ Image.MAX_IMAGE_PIXELS = None #for big TIFFS
 import glob
 import rasterio
 from rasterio.plot import show
+from pathlib import Path
 
 # URL Tutorial Download & Unzipping Files
 # https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
@@ -49,11 +50,32 @@ def plotting(save_path):
 
     tif_result = Image.fromarray(tif_log, mode='F')  # float32
     tif_result.save('{}_log.tif'.format(file_path.rsplit('.', 1)[0]), 'TIFF')
-    global result_path
-    result_path = '{}_log.tif'.format(file_path.rsplit('.', 1)[0])
     print('finished plotting')
 
 
-def display_tiff():
-    ds = rasterio.open(result_path)
+def display_tiff(result):
+    ds = rasterio.open(result)
     show((ds, 1), cmap='Greys')
+
+
+def start_program(url, save_path):
+    zip_name = url.rsplit('/', 1)[1]
+    zip_file = Path('{}/{}'.format(save_path, zip_name))
+    geotif = Path(r'{}/S1A_IW_20230214T031857_DVP_RTC10_G_gpunem_A42B_VH.tif'.format(save_path))
+    result = Path(r'{}/S1A_IW_20230214T031857_DVP_RTC10_G_gpunem_A42B_VH_log.tif'.format(save_path))
+    finished = 'false'
+
+    while finished != 'true':
+        if not zip_file.is_file():
+             print('download zip')
+             download_zip(url, save_path)
+        elif not geotif.is_file():
+            print('unzipp needed')
+            unzipp(url, save_path)
+        elif not result.is_file():
+            print('plotting needed')
+            plotting(save_path)
+        else:
+            finished = 'true'
+            print('display result')
+            display_tiff(result)
