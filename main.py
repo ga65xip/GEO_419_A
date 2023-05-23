@@ -7,39 +7,63 @@ import glob
 import rasterio
 from rasterio.plot import show
 
-# URL Tutorial
-#https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
+# URL Tutorial Download & Unzipping Files
+# https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
 
+# Added Progress Bar
+# https://stackoverflow.com/questions/37573483/progress-bar-while-download-file-over-http-with-requests
+
+# Numpy Working with 0's
+# https://stackoverflow.com/questions/21752989/numpy-efficiently-avoid-0s-when-taking-logmatrix
+
+# Read and Show TIFFs
+# https://www.kaggle.com/code/yassinealouini/working-with-tiff-files
+
+# url = Link to File
+# save_path = path to folder where the file is stored
+# file_path = direct path to file
 
 def download_zip(url, save_path):
-    filename = url.rsplit('/', 1)[1]
-    # Create a new file on the hard drive
-    zip_data = open('{}/{}'.format(save_path, filename), "wb")
-    # Write the contents of the downloaded file into the new file
-    zip_data.write(urlopen(url).read())
-    # Close the newly-created file
-    zip_data.close()
-    print('finish')
+    block_size = 1024  # 1 Kibibyte
+    filename = url.split("/")[-1]
+    print(f"Downloading {filename}...")
+    site = urlopen(url)
+    meta = site.info()
+    # Streaming, so we can iterate over the response.
+    response = requests.get(url, stream=True)
+    total_size_in_bytes = int(meta["Content-Length"])
+    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
+    with open('{}/{}'.format(save_path, filename), "wb") as file:
+        for data in response.iter_content(block_size):
+            progress_bar.update(len(data))
+            file.write(data)
+    progress_bar.close()
+    print("Download complete!")
 
 
-def unzipp(path, filename):
-    with zipfile.ZipFile('{}/{}'.format(path, filename), "r") as zip_ref:
-        zip_ref.extractall(path)
+def unzipp(url, save_path):
+    zipname = url.rsplit('/', 1)[1]
+    with zipfile.ZipFile('{}/{}'.format(save_path, zipname), "r") as zip_ref:
+        zip_ref.extractall(save_path)
     print('unzipped')
 
 
 def plotting(save_path):
     path = glob.glob('{}/*.tif'.format(save_path))
     filename = path[0].rsplit('\\', 1)[1]
-    speichername = '{}/{}'.format(save_path, filename)
-    tif_arr = np.asarray(Image.open(speichername))
+    file_path = '{}/{}'.format(save_path, filename)
+    tif_arr = np.asarray(Image.open(file_path))
 
-    # https://stackoverflow.com/questions/21752989/numpy-efficiently-avoid-0s-when-taking-logmatrix
+
     tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))
 
     tif_result = Image.fromarray(tif_log, mode='F')  # float32
-    tif_result.save('{}_log.tif'.format(speichername.rsplit('.', 1)[0]), 'TIFF')
+    tif_result.save('{}_log.tif'.format(file_path.rsplit('.', 1)[0]), 'TIFF')
+    global result_path
+    result_path = '{}_log.tif'.format(file_path.rsplit('.', 1)[0])
+    print('finished plotting')
 
-def display_tiff(save_path):
-    ds = rasterio.open(save_path)
+
+def display_tiff():
+    ds = rasterio.open(result_path)
     show((ds, 1), cmap='Greys')
