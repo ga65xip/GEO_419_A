@@ -65,7 +65,7 @@ def plotting(save_path):
     result_path = '{}_log.tif'.format(file_path.rsplit('.', 1)[0])
     print('finished plotting')
 
-
+#
 def display_tiff():
     ds = rasterio.open(result_path)
     show((ds, 1), cmap='Greys')
