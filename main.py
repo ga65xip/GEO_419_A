@@ -24,6 +24,7 @@ import matplotlib.pyplot as plt
 # save_path = path to folder where the file is stored
 # file_path = direct path to file
 
+
 def download_zip(url, save_path):
     zipname = url.split('/')[-1]
     block_size = 1024  # 1 Kibibyte
@@ -71,7 +72,8 @@ def plotting(save_path):
 def display_tiff(result):
     ds = rasterio.open(result)
     fig, ax = plt.subplots()
-    im = ax.imshow(ds.read(1), cmap='Greys', vmin=-50, vmax=15, extent=(ds.bounds.left, ds.bounds.right, ds.bounds.bottom, ds.bounds.top))
+    im = ax.imshow(ds.read(1), cmap='Greys', vmin=-50, vmax=15, extent=(ds.bounds.left, ds.bounds.right,
+                                                                        ds.bounds.bottom, ds.bounds.top))
     ax.set_xlabel('X Coordinate')
     ax.set_ylabel('Y Coordinate')
     fig.colorbar(im, ax=ax, label='VH-Backscatter [dB]')
@@ -87,8 +89,8 @@ def start_program(url, save_path):
 
     while finished != 'true':
         if not zip_file.is_file():
-             print('Download ZIP!')
-             download_zip(url, save_path)
+            print('Download ZIP!')
+            download_zip(url, save_path)
         elif not geotif.is_file():
             print('Unzipp needed!')
             unzipp(url, save_path)
