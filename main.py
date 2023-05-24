@@ -3,8 +3,6 @@ from tqdm import tqdm
 from urllib.request import urlopen
 import zipfile
 import numpy as np
-from PIL import Image
-Image.MAX_IMAGE_PIXELS = None #for big TIFFS
 import glob
 import rasterio
 from rasterio.plot import show
@@ -55,13 +53,18 @@ def plotting(save_path):
     path = glob.glob('{}/*.tif'.format(save_path))
     filename = path[0].rsplit('\\', 1)[1]
     file_path = '{}/{}'.format(save_path, filename)
-    tif_arr = np.asarray(Image.open(file_path))
 
+    with rasterio.open(file_path) as src:
+        tif_arr = src.read(1)
+        profile = src.profile
 
     tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))
+    log_file_path = '{}_log.tif'.format(file_path.rsplit('.', 1)[0])
+    profile.update(dtype=rasterio.float32, count=1)
 
-    tif_result = Image.fromarray(tif_log, mode='F')  # float32
-    tif_result.save('{}_log.tif'.format(file_path.rsplit('.', 1)[0]), 'TIFF')
+    with rasterio.open(log_file_path, 'w', **profile) as dst:
+        dst.write(tif_log, 1)
+
     print('Finished calculating!')
 
 
