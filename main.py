@@ -5,8 +5,8 @@ import zipfile
 import numpy as np
 import glob
 import rasterio
-from rasterio.plot import show
 from pathlib import Path
+import matplotlib.pyplot as plt
 
 # URL Tutorial Download & Unzipping Files
 # https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
