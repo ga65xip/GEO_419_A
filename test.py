@@ -1,14 +1,9 @@
 from main import start_program
 
-#Setup für Download und Speicherung
-url = 'https://upload.uni-jena.de/data/641c17ff33dd02.60763151/GEO419A_Testdatensatz.zip'
-#Philip
-save_path = 'C:/Users/herzu/Documents/GEO419'
-#Niklas
-#save_path = r'D:\Studium\GEO_419A Python Kurs\Abschlussaufgabe\Ouput\test'
+# Setup für Download und Speicherung
+# Philip
+# save_path = 'C:/Users/herzu/Documents/GEO419'
+# Niklas
+save_path = r'D:\Studium\GEO_419A Python Kurs\Abschlussaufgabe\Ouput\test'
 
-
-start_program(url, save_path)
-
-
-
+start_program(save_path)

@@ -80,7 +80,8 @@ def display_tiff(result):
     plt.show()
 
 
-def start_program(url, save_path):
+def start_program(save_path):
+    url = 'https://upload.uni-jena.de/data/641c17ff33dd02.60763151/GEO419A_Testdatensatz.zip'
     zip_name = url.rsplit('/', 1)[1]
     zip_file = Path('{}/{}'.format(save_path, zip_name))
     geotif = Path(r'{}/S1A_IW_20230214T031857_DVP_RTC10_G_gpunem_A42B_VH.tif'.format(save_path))
@@ -101,3 +102,8 @@ def start_program(url, save_path):
             finished = 'true'
             print('Display result!')
             display_tiff(result)
+
+
+if __name__ == "__main__":
+    text = str(input("Input your save path: "))
+    start_program(text)
