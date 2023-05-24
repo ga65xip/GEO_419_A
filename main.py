@@ -70,7 +70,12 @@ def plotting(save_path):
 
 def display_tiff(result):
     ds = rasterio.open(result)
-    show((ds, 1), cmap='Greys')
+    fig, ax = plt.subplots()
+    im = ax.imshow(ds.read(1), cmap='Greys', vmin=-50, vmax=15, extent=(ds.bounds.left, ds.bounds.right, ds.bounds.bottom, ds.bounds.top))
+    ax.set_xlabel('X Coordinate')
+    ax.set_ylabel('Y Coordinate')
+    fig.colorbar(im, ax=ax, label='VH-Backscatter [dB]')
+    plt.show()
 
 
 def start_program(url, save_path):
