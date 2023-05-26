@@ -26,16 +26,16 @@ import matplotlib.pyplot as plt
 
 
 def download_zip(url, save_path):
-    zipname = url.split('/')[-1]
+    zip_name = url.split('/')[-1]
     block_size = 1024  # 1 Kibibyte
-    print(f'Downloading {zipname}...')
+    print(f'Downloading {zip_name}...')
     site = urlopen(url)
     meta = site.info()
     # Streaming, so we can iterate over the response.
     response = requests.get(url, stream=True)
     total_size_in_bytes = int(meta['Content-Length'])
     progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
-    with open('{}/{}'.format(save_path, zipname), 'wb') as file:
+    with open('{}/{}'.format(save_path, zip_name), 'wb') as file:
         for data in response.iter_content(block_size):
             progress_bar.update(len(data))
             file.write(data)
@@ -43,9 +43,9 @@ def download_zip(url, save_path):
     print('Download complete!')
 
 
-def unzipp(url, save_path):
-    zipname = url.rsplit('/', 1)[1]
-    with zipfile.ZipFile('{}/{}'.format(save_path, zipname), 'r') as zip_ref:
+def unzip(url, save_path):
+    zip_name = url.rsplit('/', 1)[1]
+    with zipfile.ZipFile('{}/{}'.format(save_path, zip_name), 'r') as zip_ref:
         zip_ref.extractall(save_path)
     print('Unzipped!')
 
@@ -93,8 +93,8 @@ def start_program(save_path):
             print('Download ZIP!')
             download_zip(url, save_path)
         elif not geotif.is_file():
-            print('Unzipp needed!')
-            unzipp(url, save_path)
+            print('Unzip needed!')
+            unzip(url, save_path)
         elif not result.is_file():
             print('Plotting needed!')
             plotting(save_path)
