@@ -26,17 +26,21 @@ import matplotlib.pyplot as plt
 
 
 def download_zip(url, save_path):
-    '''
+    """
+    Download ZipFile from url and save to path.
 
     Parameters
     ----------
     url: str
+        Link to download file.
     save_path: Path
+        Location to store the file.
 
     Returns
     -------
-
-    '''
+    result_download_zip: Path
+        Location of ZipFile.
+    """
     zip_name = url.split('/')[-1]  # get zip name from Path
     block_size = 1024  # 1 Kibibyte
     print(f'Downloading {zip_name}...')
@@ -52,9 +56,25 @@ def download_zip(url, save_path):
             file.write(data)
     progress_bar.close()
     print('Download complete!')  # print after completing function
+    download_zip_path = Path(r'{}/{}'.format(save_path, zip_name))  # define output
+    return download_zip_path
 
 
 def unzip(url, save_path):
+    """
+    Extract files from ZipFile.
+
+    Parameters
+    ----------
+    url: str
+        Extract folder name.
+    save_path: Path
+        Location to folder.
+
+    Returns
+    -------
+    None
+    """
     zip_name = url.rsplit('/', 1)[1]
     # open zipfile and extract to save path
     with zipfile.ZipFile('{}/{}'.format(save_path, zip_name), 'r') as zip_ref:
@@ -63,8 +83,20 @@ def unzip(url, save_path):
 
 
 def plotting(save_path):
+    """
+    Load tif as array, perform calculations, write to new tif.
+
+    Parameters
+    ----------
+    save_path: Path
+        Location to folder.
+
+    Returns
+    -------
+
+    """
     # create setup variables
-    path = glob.glob('{}/*.tif'.format(save_path))
+    path = glob.glob('{}/*.tif'.format(save_path))  # searching for tif file in folder
     filename = path[0].rsplit('\\', 1)[1]
     file_path = '{}/{}'.format(save_path, filename)
 
@@ -75,14 +107,27 @@ def plotting(save_path):
     # write and save manipulated tif
     tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))  # log10 without zeros
     tif_log = np.where(tif_log == 0, -999, tif_log)  # set zeros/NaN to -999
-    log_file_path = '{}_log.tif'.format(file_path.rsplit('.', 1)[0])
+    log_file_path = Path('{}_log.tif'.format(file_path.rsplit('.', 1)[0]))  # define output name & path
     profile.update(dtype=rasterio.float32, count=1)
     with rasterio.open(log_file_path, 'w', **profile) as dst:
         dst.write(tif_log, 1)
     print('Finished calculating!')  # print after completing function
+    return log_file_path
 
 
 def display_tif(result):
+    """
+    Display tif using matplotlib.
+
+    Parameters
+    ----------
+    result: Path
+        Location of previous calculated log file
+
+    Returns
+    -------
+    None
+    """
     # open tif and display result
     tif = rasterio.open(result)
     fig, ax = plt.subplots()
@@ -95,6 +140,18 @@ def display_tif(result):
 
 
 def start_program(save_path):
+    """
+    Executes the previously created functions if needed, otherwise skip the function.
+
+    Parameters
+    ----------
+    save_path: Path
+        User defined Input to store the files.
+
+    Returns
+    -------
+
+    """
     # create setup variables
     url = 'https://upload.uni-jena.de/data/641c17ff33dd02.60763151/GEO419A_Testdatensatz.zip'
     zip_name = url.rsplit('/', 1)[1]
@@ -125,4 +182,3 @@ if __name__ == "__main__":
     text = str(input("Input your save path: "))
     user_save_path = Path(r'{}'.format(text))
     start_program(user_save_path)
-
