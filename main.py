@@ -93,7 +93,7 @@ def plotting(save_path):
 
     Returns
     -------
-    Path
+    log_file_path: Path
         The path to the created manipulated tif file.
     """
     # create setup variables
