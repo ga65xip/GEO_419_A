@@ -26,6 +26,17 @@ import matplotlib.pyplot as plt
 
 
 def download_zip(url, save_path):
+    '''
+
+    Parameters
+    ----------
+    url: str
+    save_path: Path
+
+    Returns
+    -------
+
+    '''
     zip_name = url.split('/')[-1]  # get zip name from Path
     block_size = 1024  # 1 Kibibyte
     print(f'Downloading {zip_name}...')
@@ -112,4 +123,6 @@ def start_program(save_path):
 # main block
 if __name__ == "__main__":
     text = str(input("Input your save path: "))
-    start_program(text)
+    user_save_path = Path(r'{}'.format(text))
+    start_program(user_save_path)
+
