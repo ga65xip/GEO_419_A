@@ -4,7 +4,6 @@ import zipfile
 import numpy as np
 import rasterio
 from pathlib import Path
-# import glob
 import matplotlib.pyplot as plt
 
 
