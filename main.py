@@ -40,7 +40,7 @@ def download_zip(url, save_path):
             progress_bar.update(len(data))
             file.write(data)
     progress_bar.close()
-    print('Download complete!')  # print after completing Function
+    print('Download complete!')  # print after completing function
 
 
 def unzip(url, save_path):
@@ -48,7 +48,7 @@ def unzip(url, save_path):
     # open zipfile and extract to save path
     with zipfile.ZipFile('{}/{}'.format(save_path, zip_name), 'r') as zip_ref:
         zip_ref.extractall(save_path)
-    print('Unzipped!')  # print after completing Function
+    print('Unzipped!')  # print after completing function
 
 
 def plotting(save_path):
@@ -56,32 +56,35 @@ def plotting(save_path):
     path = glob.glob('{}/*.tif'.format(save_path))
     filename = path[0].rsplit('\\', 1)[1]
     file_path = '{}/{}'.format(save_path, filename)
+
     # open file with rasterio as numpy array
     with rasterio.open(file_path) as src:
         tif_arr = src.read(1)
         profile = src.profile
     # write and save manipulated tif
-    tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))  #
-    tif_log = np.where(tif_log == 0, -999, tif_log)
+    tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))  # log10 without zeros
+    tif_log = np.where(tif_log == 0, -999, tif_log)  # set zeros/NaN to -999
     log_file_path = '{}_log.tif'.format(file_path.rsplit('.', 1)[0])
     profile.update(dtype=rasterio.float32, count=1)
     with rasterio.open(log_file_path, 'w', **profile) as dst:
         dst.write(tif_log, 1)
-    print('Finished calculating!')  # print after completing Function
+    print('Finished calculating!')  # print after completing function
 
 
-def display_tiff(result):
-    ds = rasterio.open(result)
+def display_tif(result):
+    # open tif and display result
+    tif = rasterio.open(result)
     fig, ax = plt.subplots()
-    im = ax.imshow(ds.read(1), cmap='Greys', vmin=-50, vmax=15, extent=(ds.bounds.left, ds.bounds.right,
-                                                                        ds.bounds.bottom, ds.bounds.top))
+    image = ax.imshow(tif.read(1), cmap='Greys', vmin=-50, vmax=15, extent=(tif.bounds.left, tif.bounds.right,
+                                                                            tif.bounds.bottom, tif.bounds.top))
     ax.set_xlabel('X Coordinate')
     ax.set_ylabel('Y Coordinate')
-    fig.colorbar(im, ax=ax, label='VH-Backscatter [dB]')
+    fig.colorbar(image, ax=ax, label='VH-Backscatter [dB]')
     plt.show()
 
 
 def start_program(save_path):
+    # create setup variables
     url = 'https://upload.uni-jena.de/data/641c17ff33dd02.60763151/GEO419A_Testdatensatz.zip'
     zip_name = url.rsplit('/', 1)[1]
     zip_file = Path('{}/{}'.format(save_path, zip_name))
@@ -89,8 +92,9 @@ def start_program(save_path):
     result = Path(r'{}/S1A_IW_20230214T031857_DVP_RTC10_G_gpunem_A42B_VH_log.tif'.format(save_path))
     finished = 'false'
 
+    # iterate over functions until finished is true
     while finished != 'true':
-        if not zip_file.is_file():
+        if not zip_file.is_file():  # check for existence of file
             print('Download ZIP!')
             download_zip(url, save_path)
         elif not geotif.is_file():
@@ -101,10 +105,11 @@ def start_program(save_path):
             plotting(save_path)
         else:
             finished = 'true'
-            print('Display result!')
-            display_tiff(result)
+            print('Display result!')  # print when finished
+            display_tif(result)
 
 
+# main block
 if __name__ == "__main__":
     text = str(input("Input your save path: "))
     start_program(text)
