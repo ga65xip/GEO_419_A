@@ -9,6 +9,9 @@ import matplotlib.pyplot as plt
 # URL Tutorial Download & Unzipping Files
 # https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
 
+# Working with pathlib
+# https://pathlib.readthedocs.io/en/pep428/
+
 # Added Progress Bar
 # https://stackoverflow.com/questions/37573483/progress-bar-while-download-file-over-http-with-requests
 
