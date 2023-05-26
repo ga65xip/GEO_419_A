@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 # Read and Show TIFFs
 # https://www.kaggle.com/code/yassinealouini/working-with-tiff-files
 
-# url = Link to File
+# url = Link to file
 # save_path = path to folder where the file is stored
 # file_path = direct path to file
 
@@ -75,7 +75,7 @@ def unzip(url, save_path):
     -------
     None
     """
-    zip_name = url.rsplit('/', 1)[1]
+    zip_name = Path(url).name
     # open zipfile and extract to save path
     with zipfile.ZipFile('{}/{}'.format(save_path, zip_name), 'r') as zip_ref:
         zip_ref.extractall(save_path)
@@ -93,11 +93,12 @@ def plotting(save_path):
 
     Returns
     -------
-
+    Path
+        The path to the created manipulated tif file.
     """
     # create setup variables
     path = glob.glob('{}/*.tif'.format(save_path))  # searching for tif file in folder
-    filename = path[0].rsplit('\\', 1)[1]
+    filename = Path(path[0]).name
     file_path = '{}/{}'.format(save_path, filename)
 
     # open file with rasterio as numpy array
@@ -166,17 +167,17 @@ def start_program(save_path, finished=False):
     # iterate over functions until finished is true
     while not finished:
         if not zip_file.is_file():  # check for existence of file
-            print('Download ZIP!')
+            print('Downloading ZIP!')
             download_zip(url, save_path)
         elif not geotif.is_file():
-            print('Unzip needed!')
+            print('Unzipping needed!')
             unzip(url, save_path)
         elif not result.is_file():
             print('Plotting needed!')
             plotting(save_path)
         else:
             finished = True
-            print('Display result!')  # print when finished
+            print('Displaying result!')  # print when finished
             display_tif(result)
 
     return finished
