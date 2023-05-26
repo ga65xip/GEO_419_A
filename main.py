@@ -1,28 +1,11 @@
 import requests
 from tqdm import tqdm
-from urllib.request import urlopen
 import zipfile
 import numpy as np
-import glob
 import rasterio
 from pathlib import Path
+# import glob
 import matplotlib.pyplot as plt
-
-# URL Tutorial Download & Unzipping Files
-# https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
-
-# Added Progress Bar
-# https://stackoverflow.com/questions/37573483/progress-bar-while-download-file-over-http-with-requests
-
-# Numpy Working with 0's
-# https://stackoverflow.com/questions/21752989/numpy-efficiently-avoid-0s-when-taking-logmatrix
-
-# Read and Show TIFFs
-# https://www.kaggle.com/code/yassinealouini/working-with-tiff-files
-
-# url = Link to file
-# save_path = path to folder where the file is stored
-# file_path = direct path to file
 
 
 def download_zip(url, save_path):
@@ -41,43 +24,40 @@ def download_zip(url, save_path):
     result_download_zip: Path
         Location of ZipFile.
     """
-    zip_name = url.split('/')[-1]  # get zip name from Path
+    zip_name = Path(url).name  # get zip name from Path
     block_size = 1024  # 1 Kibibyte
     print(f'Downloading {zip_name}...')
-    site = urlopen(url)
-    meta = site.info()
-    # Streaming, so we can iterate over the response and add progress bar
     response = requests.get(url, stream=True)
-    total_size_in_bytes = int(meta['Content-Length'])
+    response.raise_for_status()  # check if the request was successful
+    total_size_in_bytes = int(response.headers.get('content-length', 0))
     progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
-    with open('{}/{}'.format(save_path, zip_name), 'wb') as file:
+    with open(save_path / zip_name, 'wb') as file:
         for data in response.iter_content(block_size):
             progress_bar.update(len(data))
             file.write(data)
     progress_bar.close()
     print('Download complete!')  # print after completing function
-    download_zip_path = Path(r'{}/{}'.format(save_path, zip_name))  # define output
+    download_zip_path = save_path / zip_name  # define output
     return download_zip_path
 
 
-def unzip(url, save_path):
+def unzip(zip_file, save_path):
     """
     Extract files from ZipFile.
 
     Parameters
     ----------
-    url: str
-        Extract folder name.
+    zip_file: Path
+        Path to the ZipFile.
     save_path: Path
-        Location to folder.
+        Location to extract the files.
 
     Returns
     -------
     None
     """
-    zip_name = Path(url).name
     # open zipfile and extract to save path
-    with zipfile.ZipFile('{}/{}'.format(save_path, zip_name), 'r') as zip_ref:
+    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
         zip_ref.extractall(save_path)
     print('Unzipped!')  # print after completing function
 
@@ -96,19 +76,18 @@ def plotting(save_path):
     log_file_path: Path
         The path to the created manipulated tif file.
     """
-    # create setup variables
-    path = glob.glob('{}/*.tif'.format(save_path))  # searching for tif file in folder
-    filename = Path(path[0]).name
-    file_path = '{}/{}'.format(save_path, filename)
+    # create file path
+    file_path = next(save_path.glob('*.tif'))
 
     # open file with rasterio as numpy array
     with rasterio.open(file_path) as src:
         tif_arr = src.read(1)
         profile = src.profile
-    # write and save manipulated tif
+
     tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))  # log10 without zeros
     tif_log = np.where(tif_log == 0, -999, tif_log)  # set zeros/NaN to -999
-    log_file_path = Path('{}_log.tif'.format(file_path.rsplit('.', 1)[0]))  # define output name & path
+    log_file_name = f'{Path(file_path).stem}_log.tif'  # define output name & path
+    log_file_path = save_path / log_file_name
     profile.update(dtype=rasterio.float32, count=1)
     with rasterio.open(log_file_path, 'w', **profile) as dst:
         dst.write(tif_log, 1)
@@ -123,7 +102,7 @@ def display_tif(result):
     Parameters
     ----------
     result: Path
-        Location of previous calculated log file
+        Location of the previously calculated log file.
 
     Returns
     -------
@@ -149,30 +128,38 @@ def start_program(save_path, finished=False):
     save_path: Path
         User defined Input to store the files.
     finished: bool, optional
-        Flag indicating if the program execution is completed. Default is False.
+        Indicating if the program execution is completed.
 
     Returns
     -------
-    bool
-        True if the program execution is completed, False otherwise.
-    """
+    None
 
+    Notes
+    -----
+    This function performs the following steps:
+    1. Downloads a zip file from a specified url if it doesn't exist in the save_path.
+    2. Unzips the downloaded file if the required tif file doesn't exist in the save_path.
+    3. Plots the data and creates a log-transformed tif file if the file doesn't exist in the save_path.
+    4. Displays the resulting tif file.
+
+    The function loops through these steps until finished is True.
+    """
     # create setup variables
     url = 'https://upload.uni-jena.de/data/641c17ff33dd02.60763151/GEO419A_Testdatensatz.zip'
-    zip_name = url.rsplit('/', 1)[1]
-    zip_file = Path('{}/{}'.format(save_path, zip_name))
-    geotif = Path(r'{}/S1A_IW_20230214T031857_DVP_RTC10_G_gpunem_A42B_VH.tif'.format(save_path))
-    result = Path(r'{}/S1A_IW_20230214T031857_DVP_RTC10_G_gpunem_A42B_VH_log.tif'.format(save_path))
+    zip_name = Path(url).name
+    zip_file = save_path / zip_name
+    geotif = save_path / 'S1A_IW_20230214T031857_DVP_RTC10_G_gpunem_A42B_VH.tif'
+    result = save_path / 'S1A_IW_20230214T031857_DVP_RTC10_G_gpunem_A42B_VH_log.tif'
 
     # iterate over functions until finished is true
     while not finished:
-        if not zip_file.is_file():  # check for existence of file
+        if not zip_file.exists():  # check for existence of file
             print('Downloading ZIP!')
             download_zip(url, save_path)
-        elif not geotif.is_file():
+        elif not geotif.exists():
             print('Unzipping needed!')
-            unzip(url, save_path)
-        elif not result.is_file():
+            unzip(zip_file, save_path)
+        elif not result.exists():
             print('Plotting needed!')
             plotting(save_path)
         else:
@@ -180,11 +167,9 @@ def start_program(save_path, finished=False):
             print('Displaying result!')  # print when finished
             display_tif(result)
 
-    return finished
-
 
 # main block
 if __name__ == "__main__":
     text = str(input("Input your save path: "))
-    user_save_path = Path(r'{}'.format(text))
+    user_save_path = Path(text)
     start_program(user_save_path)
