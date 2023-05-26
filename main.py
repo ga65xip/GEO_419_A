@@ -26,12 +26,12 @@ import matplotlib.pyplot as plt
 
 
 def download_zip(url, save_path):
-    zip_name = url.split('/')[-1]
+    zip_name = url.split('/')[-1]  # get zip name from Path
     block_size = 1024  # 1 Kibibyte
     print(f'Downloading {zip_name}...')
     site = urlopen(url)
     meta = site.info()
-    # Streaming, so we can iterate over the response.
+    # Streaming, so we can iterate over the response and add progress bar
     response = requests.get(url, stream=True)
     total_size_in_bytes = int(meta['Content-Length'])
     progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
@@ -40,33 +40,34 @@ def download_zip(url, save_path):
             progress_bar.update(len(data))
             file.write(data)
     progress_bar.close()
-    print('Download complete!')
+    print('Download complete!')  # print after completing Function
 
 
 def unzip(url, save_path):
     zip_name = url.rsplit('/', 1)[1]
+    # open zipfile and extract to save path
     with zipfile.ZipFile('{}/{}'.format(save_path, zip_name), 'r') as zip_ref:
         zip_ref.extractall(save_path)
-    print('Unzipped!')
+    print('Unzipped!')  # print after completing Function
 
 
 def plotting(save_path):
+    # create setup variables
     path = glob.glob('{}/*.tif'.format(save_path))
     filename = path[0].rsplit('\\', 1)[1]
     file_path = '{}/{}'.format(save_path, filename)
-
+    # open file with rasterio as numpy array
     with rasterio.open(file_path) as src:
         tif_arr = src.read(1)
         profile = src.profile
-
-    tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))
+    # write and save manipulated tif
+    tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))  #
+    tif_log = np.where(tif_log == 0, -999, tif_log)
     log_file_path = '{}_log.tif'.format(file_path.rsplit('.', 1)[0])
     profile.update(dtype=rasterio.float32, count=1)
-
     with rasterio.open(log_file_path, 'w', **profile) as dst:
         dst.write(tif_log, 1)
-
-    print('Finished calculating!')
+    print('Finished calculating!')  # print after completing Function
 
 
 def display_tiff(result):
