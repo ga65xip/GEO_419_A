@@ -90,10 +90,10 @@ def start_program(save_path):
     zip_file = Path('{}/{}'.format(save_path, zip_name))
     geotif = Path(r'{}/S1A_IW_20230214T031857_DVP_RTC10_G_gpunem_A42B_VH.tif'.format(save_path))
     result = Path(r'{}/S1A_IW_20230214T031857_DVP_RTC10_G_gpunem_A42B_VH_log.tif'.format(save_path))
-    finished = 'false'
+    finished = False
 
     # iterate over functions until finished is true
-    while finished != 'true':
+    while not finished:
         if not zip_file.is_file():  # check for existence of file
             print('Download ZIP!')
             download_zip(url, save_path)
@@ -104,7 +104,7 @@ def start_program(save_path):
             print('Plotting needed!')
             plotting(save_path)
         else:
-            finished = 'true'
+            finished = True
             print('Display result!')  # print when finished
             display_tif(result)
 
