@@ -6,6 +6,22 @@ import rasterio
 from pathlib import Path
 import matplotlib.pyplot as plt
 
+# URL Tutorial Download & Unzipping Files
+# https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
+
+# Added Progress Bar
+# https://stackoverflow.com/questions/37573483/progress-bar-while-download-file-over-http-with-requests
+
+# Numpy Working with 0's
+# https://stackoverflow.com/questions/21752989/numpy-efficiently-avoid-0s-when-taking-logmatrix
+
+# Read and Show TIFFs
+# https://www.kaggle.com/code/yassinealouini/working-with-tiff-files
+
+# url = Link to File
+# save_path = path to folder where the file is stored
+# file_path = direct path to file
+
 
 def download_zip(url, save_path):
     """
