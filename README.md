@@ -10,5 +10,5 @@ conda env create -f environment.yml
 
   
 ## Anwendung
-  Das Programm benötigt ein URL zum Downloaden einer Datei. Es entpackt diese wenn nötig und logarithmiert sie. Bei der entpackten Datei muss es sich um eine .tif    handeln, damit das Programm funktioniert.
+  Das Programm benötigt eine URL zum Downloaden einer Datei. Es entpackt diese wenn nötig und logarithmiert sie. Bei der entpackten Datei muss es sich um eine .tif    handeln, damit das Programm funktioniert.
   Es ist über das Terminal, als auch eine IDE aufrufbar.
