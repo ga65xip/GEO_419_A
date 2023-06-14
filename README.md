@@ -5,10 +5,8 @@
 <div style="background-color: #f9f2f4; padding: 10px; border-radius: 5px;">
   
 ```shell
-  conda env create -f GEO419A.yml
-  <button onclick="navigator.clipboard.writeText('conda env create -f environment.yml')">Kopieren</button>
+conda env create -f environment.yml
 
-</div>
 
   
 ## Anwendung
