@@ -101,7 +101,7 @@ def plotting(save_path):
         tif_arr = src.read(1)
         profile = src.profile
 
-    tif_log = 10 * np.log10(tif_arr, out=np.zeros_like(tif_arr), where=(tif_arr != 0))  # log10 without zeros
+    tif_log = 10 * np.log10(tif_arr, where=(tif_arr != 0))  # log10 without zeros
     tif_log = np.where(tif_log == 0, -999, tif_log)  # set zeros/NaN to -999
     log_file_name = f'{Path(file_path).stem}_log.tif'  # define output name & path
     log_file_path = save_path / log_file_name
