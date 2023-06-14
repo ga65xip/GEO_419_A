@@ -6,8 +6,11 @@ import rasterio
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-# URL Tutorial Download & Unzipping Files
+# Tutorial Download
 # https://svaderia.github.io/articles/downloading-and-unzipping-a-zipfile/
+
+# Tutorial Unzip
+# https://stackoverflow.com/questions/3451111/unzipping-files-in-python
 
 # Working with pathlib
 # https://pathlib.readthedocs.io/en/pep428/
