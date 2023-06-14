@@ -186,7 +186,7 @@ def start_program(save_path, finished=False):
 
 
 # main block
-if __name__ == "__main__":
-    user_input = str(input("Input your save path: "))
+if __name__ == '__main__':
+    user_input = str(input('Input your save path: '))
     user_save_path = Path(user_input)
     start_program(user_save_path)
