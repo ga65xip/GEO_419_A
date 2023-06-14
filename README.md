@@ -5,4 +5,4 @@ Das Programm ermöglicht das Herunterladen, Entpacken, Lesen, Manipulieren sowie
 <div style="background-color: #f9f2f4; padding: 10px; border-radius: 5px;">
   
 ```shell
-conda env create -f environment.yml
+conda env create -f GEO419A.yml
