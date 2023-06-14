@@ -6,7 +6,11 @@
   
 ```shell
   conda env create -f GEO419A.yml
+  <button onclick="navigator.clipboard.writeText('conda env create -f environment.yml')">Kopieren</button>
+
+</div>
+
   
- ## Anwendung
+## Anwendung
   Das Programm benötigt ein URL zum Downloaden einer Datei. Es entpackt diese wenn nötig und logarithmiert sie. Bei der entpackten Datei muss es sich um eine .tif    handeln, damit das Programm funktioniert.
   Es ist über das Terminal, als auch eine IDE aufrufbar.
