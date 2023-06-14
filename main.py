@@ -21,10 +21,6 @@ import matplotlib.pyplot as plt
 # Read and Show TIFFs
 # https://www.kaggle.com/code/yassinealouini/working-with-tiff-files
 
-# url = Link to File
-# save_path = path to folder where the file is stored
-# file_path = direct path to file
-
 
 def download_zip(url, save_path):
     """
