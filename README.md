@@ -3,3 +3,5 @@ Das Programm ermöglicht das Herunterladen, Entpacken, Lesen, Manipulieren sowie
 
 ## Installation
 Zur Installtion wird eine yml-Datei zu Verfügung gestellt, welche alle verwendeten Softwarepakete enthält.
+
+conda env create -f environment.yml
