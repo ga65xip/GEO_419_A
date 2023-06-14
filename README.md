@@ -1,7 +1,7 @@
 # GEO 419A Abschlussaufgabe 
   Das Programm ermöglicht das Herunterladen, Entpacken, Lesen, Manipulieren sowie Visualisieren einer TIFF-Datei. Der Fokus dieses Programms liegt hierbei auf der    Automation von redundaten Aufgaben. Zusätzlich wird geprüft, ob die gewollten Schritte bereits ausgeführt wurden und somit nicht aufgeführt werden müssen.
 
-## Installation und Vorraussetzungen
+## Vorraussetzungen
 Bevor der Code ausgeführt wird, sollten folgende Abhängigkeiten installiert sein:
 
 **'requests'**: Wird für das Herunterladen von Dateien von einer URL verwendet.  
@@ -12,7 +12,7 @@ Bevor der Code ausgeführt wird, sollten folgende Abhängigkeiten installiert se
 **'pathlib'**: Wird für die Bearbeitung von Dateipfaden und Verzeichnisoperationen verwendet.  
 **'matplotlib'**: Wird zur Visualisierung der verarbeiteten GeoTIFF-Datei verwendet.  
 
-
+### Installation
 Die Pakete können über die die bereitgestellte yml-Datei folgendermaßen installiert werden:
 
 <div style="background-color: #f9f2f4; padding: 10px; border-radius: 5px;">
