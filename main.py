@@ -41,7 +41,7 @@ def download_zip(url, save_path):
     result_download_zip: Path
         Location of ZipFile.
     """
-    zip_name = Path(url).name  # get zip name from Path
+    zip_name = Path(url).name  # get zip name from URL
     block_size = 1024  # 1 Kibibyte
     print(f'Downloading {zip_name}...')
     response = requests.get(url, stream=True)
